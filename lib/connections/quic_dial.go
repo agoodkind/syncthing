@@ -41,6 +41,7 @@ type quicDialer struct {
 	commonDialer
 
 	registry *registry.Registry
+	quicCfg  *quic.Config
 }
 
 func (d *quicDialer) Dial(ctx context.Context, _ protocol.DeviceID, uri *url.URL) (internalConn, error) {
@@ -69,7 +70,7 @@ func (d *quicDialer) Dial(ctx context.Context, _ protocol.DeviceID, uri *url.URL
 	ctx, cancel := context.WithTimeout(ctx, quicOperationTimeout)
 	defer cancel()
 
-	session, err := transport.Dial(ctx, addr, d.tlsCfg, quicConfig)
+	session, err := transport.Dial(ctx, addr, d.tlsCfg, d.quicCfg)
 	if err != nil {
 		if createdConn != nil {
 			_ = createdConn.Close()
@@ -109,6 +110,7 @@ func (quicDialerFactory) New(opts config.OptionsConfiguration, tlsCfg *tls.Confi
 			allowsMultiConns:  true,
 		},
 		registry: registry,
+		quicCfg:  quicConfig(opts),
 	}
 }
 

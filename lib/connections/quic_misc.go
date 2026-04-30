@@ -12,6 +12,7 @@ package connections
 import (
 	"context"
 	"crypto/tls"
+	"math"
 	"net"
 	"net/url"
 	"sync/atomic"
@@ -19,13 +20,20 @@ import (
 
 	"github.com/quic-go/quic-go"
 
+	"github.com/syncthing/syncthing/lib/config"
 	"github.com/syncthing/syncthing/lib/osutil"
 )
 
-var quicConfig = &quic.Config{
-	MaxIdleTimeout:    30 * time.Second,
-	KeepAlivePeriod:   15 * time.Second,
-	InitialPacketSize: 1200,
+func quicConfig(opts config.OptionsConfiguration) *quic.Config {
+	cfg := &quic.Config{
+		MaxIdleTimeout:          30 * time.Second,
+		KeepAlivePeriod:         15 * time.Second,
+		DisablePathMTUDiscovery: opts.QUICDisablePathMTUDiscovery,
+	}
+	if opts.QUICInitialPacketSize > 0 {
+		cfg.InitialPacketSize = uint16(min(opts.QUICInitialPacketSize, math.MaxUint16))
+	}
+	return cfg
 }
 
 func quicNetwork(uri *url.URL) string {

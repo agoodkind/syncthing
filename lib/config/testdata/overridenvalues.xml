@@ -52,6 +52,8 @@
         <connectionPriorityTcpWan>50</connectionPriorityTcpWan>
         <connectionPriorityQuicWan>55</connectionPriorityQuicWan>
         <connectionPriorityRelay>9000</connectionPriorityRelay>
+        <quicInitialPacketSize>1200</quicInitialPacketSize>
+        <quicDisablePathMTUDiscovery>true</quicDisablePathMTUDiscovery>
     </options>
     <defaults>
         <folder id="" label="" path="/media/syncthing" type="sendreceive" rescanIntervalS="3600" fsWatcherEnabled="true" fsWatcherDelayS="10" ignorePerms="false" autoNormalize="true">

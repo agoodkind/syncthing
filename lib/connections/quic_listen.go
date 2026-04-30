@@ -113,7 +113,7 @@ func (t *quicListener) serve(ctx context.Context) error {
 	t.registry.Register(t.uri.Scheme, quicTransport)
 	defer t.registry.Unregister(t.uri.Scheme, quicTransport)
 
-	listener, err := quicTransport.Listen(t.tlsCfg, quicConfig)
+	listener, err := quicTransport.Listen(t.tlsCfg, quicConfig(t.cfg.Options()))
 	if err != nil {
 		slog.WarnContext(ctx, "Failed to listen (QUIC)", slogutil.Error(err))
 		return err
